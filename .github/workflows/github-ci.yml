@@ -1,10 +1,21 @@
 name: My First Workflow
 
 on:
-  push:
-    branches: ["main"]
   pull_request:
-    branches: ["main"]
+    types:
+      - opened
+      - reopened
+      - edited
+      - closed
+    branches:
+      - 'main'
+      - 'dev-**'
+      - 'releases/**'
+  push:
+    branches:
+      - 'main'
+      - 'dev-**'
+      - 'releases/**'
 
   workflow_dispatch:
 
