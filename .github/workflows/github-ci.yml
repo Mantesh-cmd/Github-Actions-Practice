@@ -22,16 +22,66 @@ on:
 
 # Workflow
 jobs:
-    build:
+    test:
         runs-on: ubuntu-latest
         # step
         steps:
-           - uses: actions/checkout@v4
+           - name: checkout code
+             uses: actions/checkout@v4
 
-           - name: Run a one-line script
-             run:  echo Hello, world!
+           - name: Set up Node.js
+             uses: actions/setup-node@v4
+             with:
+              node-version: "18"
+          
+           - name: install dependencies
+             run: npm install
 
-           - name: Run multiple commands
-             run: |
-               echo "this is first command"
-               echo "this is second command"
+           - name: Run linter
+             run: npm run lint
+
+           - name: npm test
+             run: npm test
+
+    build:
+      needs: test
+      runs-on: ubuntu-latest
+      steps:
+          - name: checkout code
+            uses: actions/checkout@v4
+
+          - name: Set up Node.js
+            uses: actions/setup-node@v4
+            with:
+              node-version: "18"
+
+          - name: install dependencies
+            run: npm install
+
+          - name: Build Project
+            run: npm run build
+
+          
+    deploy:
+      needs: build
+      runs-on: ubuntu-latest
+      steps:
+         - name: checkout code
+           uses: actions/checkout@v4
+
+         - name: Set up Node.js
+           uses: actions/setup-node@v4
+           with:
+            node-version: "18"
+
+         - name: install dependencies
+           run: npm install
+
+        
+         - name: Deploy to GitHub Pages
+           uses: peaceiris/actions-gh-pages@v4
+           with:
+            github_token: ${{ secrets.ACTION_TOKEN }}
+            publish_dir: ./build
+
+          
