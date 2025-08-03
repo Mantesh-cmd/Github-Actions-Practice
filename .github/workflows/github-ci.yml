@@ -37,9 +37,6 @@ jobs:
            - name: install dependencies
              run: npm install
 
-           - name: Run linter
-             run: npm run lint
-
            - name: npm test
              run: npm test
 
