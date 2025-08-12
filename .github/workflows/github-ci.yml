@@ -44,9 +44,20 @@ jobs:
           
            - name: install dependencies
              run: npm install
-
+             
            - name: npm test
+             id: test-report
              run: npm test
+          
+           - name: workflow condetion
+             if: steps.test-report.outcome == 'failure'
+             uses: actions/upload-artifact@v4
+             with:
+              name: dist-files
+              path: ./svc
+
+
+          
 
     build:
       needs: test
