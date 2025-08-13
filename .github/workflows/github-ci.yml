@@ -132,10 +132,10 @@ jobs:
         #     publish_dir: ./build
 
     report:
-       needs: ['test','build','deploy']
+       needs: ['test','deploy']
        if: failure()
        runs-on: ubuntu-latest
        steps:
         - name: If any job fails
           run: |
-            echo "This job is executing successfully"`
+            echo "This job is executing successfully"
