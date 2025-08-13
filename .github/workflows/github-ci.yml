@@ -57,8 +57,6 @@ jobs:
               path: ./public
 
 
-          
-
     build:
       needs: test
       runs-on: ubuntu-latest
@@ -133,4 +131,11 @@ jobs:
         #     github_token: ${{ secrets.ACTION_TOKEN }}
         #     publish_dir: ./build
 
-          
+    report:
+       needs: ['test','build','deploy']
+       if: failure()
+       runs-on: ubuntu-latest
+       steps:
+        - name: If any job fails
+          run: |
+            echo "This job is executing successfully"`
