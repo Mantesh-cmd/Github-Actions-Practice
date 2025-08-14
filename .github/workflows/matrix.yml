@@ -13,8 +13,23 @@ jobs:
                     - os: ubuntu-latest
                       version: 18
                 exclude:
-                    - os: [windows-latest,macos-latest]
-                      version: [12,14,15]
+                    - os: windows-latest
+                      version: 12
+
+                    - os: windows-latest
+                      version: 14
+                    
+                    - os: windows-latest
+                      version: 15
+
+                    - os: macos-latest
+                      version: 12
+
+                    - os: macos-latest
+                      version: 14
+                      
+                    - os: macos-latest
+                      version: 15
 
         runs-on: ${{ matrix.os }}
         steps:
