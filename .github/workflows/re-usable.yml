@@ -15,5 +15,6 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Testing the workflow
-              run: "Re-usable workflow is working"
+              run: |
+                echo "Re-usable workflow is working"
 
