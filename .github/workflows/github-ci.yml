@@ -96,40 +96,45 @@ jobs:
           
     deploy:
       needs: build
-      runs-on: ubuntu-latest
-      steps:
-         - name: checkout code
-           uses: actions/checkout@v4
+      uses: ./.github/workflows/re-usable.yml
+      with:
+        environment: "production"
+      
+      # needs: build
+      # runs-on: ubuntu-latest
+      # steps:
+      #    - name: checkout code
+      #      uses: actions/checkout@v4
 
-         - name: Set up Node.js
-           uses: actions/setup-node@v4
-           with:
-            node-version: "18"
+      #    - name: Set up Node.js
+      #      uses: actions/setup-node@v4
+      #      with:
+      #       node-version: "18"
          
-         - name: cache of modules
-           id: cache-data
-           uses: actions/cache@v4
-           with:
-              path: node_modules
-              key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-              restore-keys: |
-               ${{ runner.os }}-node-
+      #    - name: cache of modules
+      #      id: cache-data
+      #      uses: actions/cache@v4
+      #      with:
+      #         path: node_modules
+      #         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      #         restore-keys: |
+      #          ${{ runner.os }}-node-
 
-         - name: install dependencies
-           if: steps.cache-data.outputs.cache-hit != 'true'
-           run: npm install
+      #    - name: install dependencies
+      #      if: steps.cache-data.outputs.cache-hit != 'true'
+      #      run: npm install
 
-         - name: download artifacts
-           uses: actions/download-artifact@v4
-           with:
-            name: dist-files
+      #    - name: download artifacts
+      #      uses: actions/download-artifact@v4
+      #      with:
+      #       name: dist-files
 
-         - name: output contents
-           run: ls
+      #    - name: output contents
+      #      run: ls
 
 
-         - name: deploy Application
-           run: echo "Deploying...."
+      #    - name: deploy Application
+      #      run: echo "Deploying...."
 
         
         #  - name: Deploy to GitHub Pages

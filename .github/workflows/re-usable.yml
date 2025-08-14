@@ -1,0 +1,19 @@
+name: The re-usable workflow
+
+on:
+    push:
+        branches: 
+            - main
+    workflow_call:
+        inputs:
+            environment:
+                required: true
+                type: string
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Testing the workflow
+              run: "Re-usable workflow is working"
+
