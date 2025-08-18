@@ -98,7 +98,7 @@ jobs:
       needs: build
       uses: ./.github/workflows/re-usable.yml
       with:
-        environment: "production"
+        artifact-name: "production"
       
       # needs: build
       # runs-on: ubuntu-latest
