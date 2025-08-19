@@ -1,0 +1,40 @@
+name: The re-usable workflow
+
+on:
+    push:
+        branches: 
+            - main
+    workflow_call:
+        inputs:
+            artifact-name:
+                description: The deployment artifacts name
+                required: false
+                type: string
+        outputs:
+          result:
+            description: "The first output string"
+            value: ${{ jobs.deploy.outputs.outcome }}
+
+
+jobs:
+    deploy:
+        outputs:
+            outcome: ${{ steps.step-result.outputs }}
+        runs-on: ubuntu-latest
+        steps:
+            - name: check code
+              uses: actions/download-artifact@v5
+              with:
+                name: ${{ inputs.artifact-name }}
+
+            - name: list files
+              run: ls
+
+            - name: Testing the workflow
+              run: |
+                echo "Re-usable workflow is working"
+
+            - name: set the output
+              id: step-result
+              run: echo "step-result=success" >> $GITHUB_OUTPUT
+

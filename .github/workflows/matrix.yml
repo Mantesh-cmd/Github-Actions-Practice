@@ -1,0 +1,57 @@
+name: Matrix Workflow
+
+on: push
+
+jobs:
+    test:
+        continue-on-error: true
+        strategy:
+            matrix:
+                os: [ubuntu-latest,windows-latest,macos-latest]
+                version: [12, 14, 15]
+                include:
+                    - os: ubuntu-latest
+                      version: 18
+                exclude:
+                    - os: windows-latest
+                      version: 12
+
+                    - os: windows-latest
+                      version: 14
+                    
+                    - os: windows-latest
+                      version: 15
+
+                    - os: macos-latest
+                      version: 12
+
+                    - os: macos-latest
+                      version: 14
+                      
+                    - os: macos-latest
+                      version: 15
+
+        runs-on: ${{ matrix.os }}
+        steps:
+            - name: checkout code
+              uses: actions/checkout@v5
+            
+            - name: Set up Node.j
+              uses: actions/setup-node@v4
+              with:
+                node-version: "18" 
+
+            - name: install dependencies
+              run: npm install 
+            
+            
+            - name: npm test
+              id: test-report
+              run: npm test
+          
+            - name: workflow condetion
+              if: failure() && steps.test-report.outcome == 'failure'
+              uses: actions/upload-artifact@v4
+              with:
+               name: dist-files
+               path: ./public

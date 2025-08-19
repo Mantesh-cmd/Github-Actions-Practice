@@ -20,16 +20,135 @@ on:
 
   workflow_dispatch:
 
+# Workflow
 jobs:
-    build:
+    test:
         runs-on: ubuntu-latest
+        # step
         steps:
-           - uses: actions/checkout@v4
+           - name: checkout code
+             uses: actions/checkout@v4
 
-           - name: Run a one-line script
-             run:  echo Hello, world!
+           - name: Set up Node.js
+             uses: actions/setup-node@v4
+             with:
+              node-version: "18"
 
-           - name: Run multiple commands
-             run: |
-               echo "this is first command"
-               echo "this is second command"
+           - name: cache of modules
+             uses: actions/cache@v4
+             id: cache-data
+             with:
+              path: node_modules
+              key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+              restore-keys: |
+               ${{ runner.os }}-node-
+          
+           - name: install dependencies
+             if: steps.cache-data.outputs.cache-hit != 'true'
+             run: npm install
+             
+           - name: npm test
+             continue-on-error: true
+             id: test-report
+             run: npm test
+          
+           - name: workflow condetion
+             if: failure() && steps.test-report.outcome == 'failure'
+             uses: actions/upload-artifact@v4
+             with:
+              name: dist-files
+              path: ./public
+
+
+    build:
+      needs: test
+      runs-on: ubuntu-latest
+      steps:
+          - name: checkout code
+            uses: actions/checkout@v4
+
+          - name: Set up Node.js
+            uses: actions/setup-node@v4
+            with:
+              node-version: "18"
+          
+          - name: cache of modules
+            uses: actions/cache@v4
+            id: cache-data
+            with:
+              path: node_modules
+              key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+              restore-keys: |
+               ${{ runner.os }}-node-
+
+          - name: install dependencies
+            if: steps.cache-data.outputs.cache-hit != 'true'
+            run: npm install
+
+          - name: Build Project
+            run: npm run build
+          
+          - name: upload artifact
+            uses: actions/upload-artifact@v4
+            with:
+              name: dist-files
+              path: ./public
+          
+    deploy:
+      needs: build
+      uses: ./.github/workflows/re-usable.yml
+      with:
+        artifact-name: "dist-files"
+      
+      # needs: build
+      # runs-on: ubuntu-latest
+      # steps:
+      #    - name: checkout code
+      #      uses: actions/checkout@v4
+
+      #    - name: Set up Node.js
+      #      uses: actions/setup-node@v4
+      #      with:
+      #       node-version: "18"
+         
+      #    - name: cache of modules
+      #      id: cache-data
+      #      uses: actions/cache@v4
+      #      with:
+      #         path: node_modules
+      #         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      #         restore-keys: |
+      #          ${{ runner.os }}-node-
+
+      #    - name: install dependencies
+      #      if: steps.cache-data.outputs.cache-hit != 'true'
+      #      run: npm install
+
+      #    - name: download artifacts
+      #      uses: actions/download-artifact@v4
+      #      with:
+      #       name: dist-files
+             # path: test
+
+      #    - name: output contents
+      #      run: ls
+
+
+      #    - name: deploy Application
+      #      run: echo "Deploying...."
+
+        
+        #  - name: Deploy to GitHub Pages
+        #    uses: peaceiris/actions-gh-pages@v4
+        #    with:
+        #     github_token: ${{ secrets.ACTION_TOKEN }}
+        #     publish_dir: ./build
+
+    report:
+       needs: ['test']
+       if: failure()
+       runs-on: ubuntu-latest
+       steps:
+        - name: If any job fails
+          run: |
+            echo "This job is executing successfully"
