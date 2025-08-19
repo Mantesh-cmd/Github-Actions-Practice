@@ -13,7 +13,7 @@ on:
         outputs:
           result:
             description: "The first output string"
-            value: ${{ jobs.deploy.outputs.outcome}}
+            value: ${{ jobs.deploy.outputs.outcome }}
 
 
 jobs:
