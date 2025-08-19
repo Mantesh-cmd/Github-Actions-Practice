@@ -19,7 +19,7 @@ on:
 jobs:
     deploy:
         outputs:
-            outcome: ${{ steps.set-result.outputs }}
+            outcome: ${{ steps.step-result.outputs }}
         runs-on: ubuntu-latest
         steps:
             - name: check code
@@ -35,6 +35,6 @@ jobs:
                 echo "Re-usable workflow is working"
 
             - name: set the output
-              id: set-result
+              id: step-result
               run: echo "step-result=success" >> $GITHUB_OUTPUT
 
