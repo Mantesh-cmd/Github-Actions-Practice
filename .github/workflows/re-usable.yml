@@ -36,5 +36,5 @@ jobs:
 
             - name: set the output
               id: set-result
-              run: echo "set-result=success" >> $GITHUB_OUTPUT
+              run: echo "step-result=success" >> $GITHUB_OUTPUT
 
