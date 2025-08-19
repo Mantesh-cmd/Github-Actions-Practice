@@ -10,9 +10,16 @@ on:
                 description: The deployment artifacts name
                 required: false
                 type: string
+        outputs:
+          result:
+            description: "The first output string"
+            value: ${{ jobs.deploy.outputs.outcome}}
+
 
 jobs:
     deploy:
+        outputs:
+            outcome: ${{ steps.set-result.outputs }}
         runs-on: ubuntu-latest
         steps:
             - name: check code
@@ -26,4 +33,8 @@ jobs:
             - name: Testing the workflow
               run: |
                 echo "Re-usable workflow is working"
+
+            - name: set the output
+              id: set-result
+              run: echo "set-result=success" >> $GITHUB_OUTPUT
 
